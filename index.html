@@ -1,141 +1,772 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>5️⃣i計畫通行·服務監控</title>
     <link rel="icon" href="https://iTaoPu.Github.io/Status/logo.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="index.css" />
     <style>
-      /* 新增主题切换按钮样式 */
-      .theme-switcher {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        background: rgba(255,255,255,0.8);
-        border-radius: 24px;
-        padding: 4px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        z-index: 1000;
-      }
-      
-      .dark-theme .theme-switcher {
-        background: rgba(0,0,0,0.8);
-      }
-      
-      .theme-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 8px 12px;
-        margin: 0 2px;
-        border-radius: 50%;
-        transition: all 0.3s ease;
-        font-size: 20px;
-        line-height: 1;
-      }
-      
-      .theme-btn:hover {
-        background-color: rgba(0,0,0,0.1);
-        transform: scale(1.1);
-      }
-      
-      .theme-btn.active {
-        background-color: rgba(0,0,0,0.2);
-      }
+        /* 基礎樣式重置 */
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            --bg-primary: #f5f6f8;
+            --text-primary: #3b3b3b;
+            --text-secondary: #7c7c7c;
+            --card-bg: #fff;
+            --card-shadow: rgba(0, 0, 0, 0.06);
+            --border-color: #ededed;
+            --header-accent: #f5f6f8;
+            --link-color: #194b7d;
+            --success-color: #4cae50;
+            --failure-color: #f44336;
+            --partial-color: #ff9800;
+            --nodata-color: #f8f8f8;
+            --tooltip-bg: #fff;
+            --tooltip-shadow: rgba(0, 0, 0, 0.12);
+            --separator-color: #eee;
+            --footer-text: #9c9c9c;
+            
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 300;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", 
+                        "Helvetica Neue", "Ubuntu", sans-serif;
+            justify-content: center;
+            line-height: 22px;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            transition: 
+                background-color 0.3s ease,
+                color 0.3s ease;
+        }
+
+        /* 深色主題樣式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                --bg-primary: #121212;
+                --text-primary: #e0e0e0;
+                --text-secondary: #a0a0a0;
+                --card-bg: #1e1e1e;
+                --card-shadow: rgba(0, 0, 0, 0.3);
+                --border-color: #2d2d2d;
+                --header-accent: #2d2d2d;
+                --link-color: #64b5f6;
+                --success-color: #388e3c;
+                --failure-color: #d32f2f;
+                --partial-color: #f57c00;
+                --nodata-color: #2a2a2a;
+                --tooltip-bg: #2d2d2d;
+                --tooltip-shadow: rgba(0, 0, 0, 0.4);
+                --separator-color: #333;
+                --footer-text: #a0a0a0;
+            }
+        }
+
+        /* 手動切換主題的覆蓋樣式 */
+        body.dark-theme {
+            --bg-primary: #121212;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --card-bg: #1e1e1e;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --border-color: #2d2d2d;
+            --header-accent: #2d2d2d;
+            --link-color: #64b5f6;
+            --success-color: #388e3c;
+            --failure-color: #d32f2f;
+            --partial-color: #f57c00;
+            --nodata-color: #2a2a2a;
+            --tooltip-bg: #2d2d2d;
+            --tooltip-shadow: rgba(0, 0, 0, 0.4);
+            --separator-color: #333;
+            --footer-text: #a0a0a0;
+        }
+
+        body.light-theme {
+            --bg-primary: #f5f6f8;
+            --text-primary: #3b3b3b;
+            --text-secondary: #7c7c7c;
+            --card-bg: #fff;
+            --card-shadow: rgba(0, 0, 0, 0.06);
+            --border-color: #ededed;
+            --header-accent: #f5f6f8;
+            --link-color: #194b7d;
+            --success-color: #4cae50;
+            --failure-color: #f44336;
+            --partial-color: #ff9800;
+            --nodata-color: #f8f8f8;
+            --tooltip-bg: #fff;
+            --tooltip-shadow: rgba(0, 0, 0, 0.12);
+            --separator-color: #eee;
+            --footer-text: #9c9c9c;
+        }
+
+        /* 標題樣式 */
+        h1, h2, h3, h4, h5, h6, button, footer, input, textarea, .copyright, .button {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", 
+                        "Helvetica Neue", "Ubuntu", sans-serif;
+            line-height: 125%;
+            color: var(--text-primary);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 16px 0 8px 0;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 8px 0 4px 0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 5px;
+            margin-bottom: 4px;
+        }
+
+        h5 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 4px;
+        }
+
+        h6 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 4px;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .outlineButton, .button, button {
+            background-color: var(--link-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 16px;
+            white-space: nowrap;
+        }
+
+        footer {
+            color: var(--footer-text);
+            margin: 40px;
+        }
+
+        footer a {
+            font-weight: bold;
+        }
+
+        /* 主要內容區域樣式 */
+        .pageContainer {
+            padding: 30px 50px;
+            background-color: var(--card-bg);
+            box-shadow: 0px 6px 18px var(--card-shadow);
+            border-radius: 5px;
+            max-width: 900px;
+            width: 100%;
+            margin: 96px auto;
+            transition: 
+                background-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .headline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .headline span {
+            background-color: var(--header-accent);
+            border-radius: 5px;
+            padding: 6px;
+            margin-left: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .reportContainer {
+            margin: 30px auto;
+            width: 100%;
+        }
+
+        .statusContainer {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding-top: 20px;
+            text-align: left;
+            padding: 24px;
+            background-color: var(--card-bg);
+            transition: 
+                background-color 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .statusContainer + .statusContainer {
+            border-top: 1px solid var(--separator-color);
+            margin-top: 30px;
+        }
+
+        .statusStreamContainer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .statusSquare {
+            border-radius: 3px;
+            height: 30px;
+            min-width: 8px;
+            width: 100%;
+        }
+
+        .statusSquare + .statusSquare {
+            margin-left: 6px;
+        }
+
+        .sectionUrl {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .statusTitle {
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .statusHeader {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .statusSubtitle {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .statusHeadline {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 12px;
+        }
+
+        .statusUptime {
+            flex: 1;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .uptimeContainer {
+            color: var(--text-secondary);
+            display: flex;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .uptimeContainer hr {
+            border: none;
+            border-top: 1px dashed var(--separator-color);
+            width: 100%;
+            margin: 10px;
+        }
+
+        /* 狀態標籤樣式 */
+        .success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .failure {
+            background-color: var(--failure-color);
+            color: white;
+        }
+
+        .nodata {
+            background-color: var(--nodata-color);
+            color: #ccc;
+        }
+
+        .partial {
+            background-color: var(--partial-color);
+            color: white;
+        }
+
+        /* 暫態提示樣式 */
+        .tooltip {
+            background-color: var(--tooltip-bg);
+            box-shadow: 0px 6px 18px var(--tooltip-shadow);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 12px;
+            line-height: 18px;
+            padding: 16px;
+            position: absolute;
+            text-align: left;
+            z-index: 100;
+            width: 240px;
+            transition: 
+                opacity 0.2s,
+                background-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .tooltip .tooltipArrow {
+            position: absolute;
+            bottom: 100%;
+            width: 4px;
+            text-align: center;
+            border: 4px solid transparent;
+            border-bottom-color: var(--tooltip-bg);
+            left: 50%;
+            margin-left: -2px;
+            transition: border-color 0.3s ease;
+        }
+
+        .tooltip .tooltipDateTime {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .tooltip .tooltipKey {
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .tooltip .tooltipDescription {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .tooltip #tooltipStatus {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 6px;
+            display: inline-block;
+        }
+
+        .tooltip hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        /* 主題切換按鈕樣式 */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 5px;
+            display: flex;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .theme-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-primary);
+        }
+
+        .theme-btn:hover svg {
+            filter: drop-shadow(0 0 2px var(--text-primary));
+        }
+
+        .theme-btn.active {
+            background: var(--header-accent);
+        }
+
+        /* 響應式設計 */
+        @media screen and (max-width: 800px) {
+            .pageContainer {
+                padding: 30px 20px;
+                margin: 0 auto 40px auto;
+            }
+
+            .statusHeader,
+            .statusSubtitle {
+                display: block;
+            }
+
+            .statusHeadline,
+            .sectionUrl,
+            .statusUptime {
+                margin-left: 0;
+                margin-top: 8px;
+                text-align: left;
+            }
+
+            .statusTitle,
+            .statusHeadline {
+                display: inline-block;
+            }
+
+            .statusSquare + .statusSquare {
+                margin-left: 1px;
+            }
+
+            .statusSquare {
+                min-width: 4px;
+                width: 100%;
+            }
+            
+            .theme-switcher {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* 隱藏服務連結 */
+        .statusContainer a {
+            display: none;
+        }
+
+        /* 暱稱樣式 */
+        .nickname {
+            font-weight: bold;
+            margin-left: 8px;
+            color: var(--link-color);
+        }
     </style>
-    <script src="index.js"></script>
-  </head>
-  <body>
-    <!-- 新增主题切换按钮 -->
+    <script>
+        // 主題切換功能
+        function setupThemeSwitcher() {
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            
+            // 檢查本地儲存和系統偏好
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 確定初始主題
+            const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.body.classList.add(initialTheme === 'dark' ? 'dark-theme' : 'light-theme');
+            
+            // 設置活動按鈕狀態
+            themeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === initialTheme);
+            });
+            
+            // 添加按鈕點擊事件
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedTheme = btn.dataset.theme;
+                    
+                    // 更新body類
+                    document.body.classList.remove('light-theme', 'dark-theme');
+                    document.body.classList.add(selectedTheme === 'dark' ? 'dark-theme' : 'light-theme');
+                    
+                    // 更新按鈕狀態
+                    themeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // 保存到本地儲存
+                    localStorage.setItem('theme', selectedTheme);
+                });
+            });
+        }
+
+        // 模擬服務狀態數據
+        function generateSampleData() {
+            return [
+                {
+                    id: '1',
+                    title: '首頁',
+                    url: 'https://example.com',
+                    status: '成功',
+                    statusCode: 200,
+                    uptime: '99.95%',
+                    lastChecked: new Date(),
+                    description: '網站主頁狀態良好，所有功能正常運行。'
+                },
+                {
+                    id: '2',
+                    title: 'API服務',
+                    url: 'https://api.example.com',
+                    status: '部分',
+                    statusCode: 503,
+                    uptime: '98.72%',
+                    lastChecked: new Date(),
+                    description: 'API服務時常無法連接，部分功能暫時不可用。'
+                },
+                {
+                    id: '3',
+                    title: '資料庫查詢',
+                    url: 'https://db.example.com',
+                    status: '失敗',
+                    statusCode: 500,
+                    uptime: '94.31%',
+                    lastChecked: new Date(),
+                    description: '資料庫查詢錯誤頻繁，可能需要維護。'
+                },
+                {
+                    id: '4',
+                    title: '會員系統',
+                    url: 'https://members.example.com',
+                    status: '成功',
+                    statusCode: 200,
+                    uptime: '99.12%',
+                    lastChecked: new Date(),
+                    description: '會員系統運行穩定，無明顯問題。'
+                },
+                {
+                    id: '5',
+                    title: '搜尋引擎',
+                    url: 'https://search.example.com',
+                    status: '未知',
+                    statusCode: 0,
+                    uptime: '97.56%',
+                    lastChecked: new Date(),
+                    description: '搜尋功能尚未測試，將在稍後更新。'
+                }
+            ];
+        }
+
+        // 生成所有報告
+        function genAllReports() {
+            const reportsContainer = document.getElementById('reports');
+            const sampleData = generateSampleData();
+            
+            // 清空容器
+            reportsContainer.innerHTML = '';
+            
+            // 為每個服務生成一個報告
+            sampleData.forEach(service => {
+                const statusClass = getStatusClass(service.status);
+                const statusEmoji = getStatusEmoji(service.status);
+                
+                // 創建時間格式
+                const lastChecked = new Date(service.lastChecked);
+                const formattedTime = formatDate(lastChecked);
+                
+                // 創建HTML內容
+                const statusContainer = document.createElement('div');
+                statusContainer.className = 'statusContainer';
+                
+                // 獲取服務顏色
+                const colorClass = statusClass;
+                const bgColor = getColorFromStatus(statusClass);
+                
+                // 生成HTML
+                statusContainer.innerHTML = `
+                    <div class="statusHeader">
+                        <h6 class="statusTitle">${service.title} ${statusEmoji}</h6>
+                        <div class="${colorClass} statusHeadline">${service.status}</div>
+                    </div>
+                    <div class="statusSubtitle">
+                        <div class="sectionUrl">${service.url}</div>
+                        <div class="statusUptime">${service.uptime} 運行穩定度</div>
+                    </div>
+                `;
+                
+                // 添加到容器
+                reportsContainer.appendChild(statusContainer);
+                
+                // 添加點擊事件以顯示詳細資訊
+                statusContainer.addEventListener('click', () => {
+                    showTooltip(service);
+                });
+            });
+        }
+
+        // 根據狀態獲取CSS類
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case '成功': return 'success';
+                case '部分': return 'partial';
+                case '失敗': return 'failure';
+                case '未知': return 'nodata';
+                default: return 'nodata';
+            }
+        }
+
+        // 根據狀態獲取表情符號
+        function getStatusEmoji(status) {
+            switch(status.toLowerCase()) {
+                case '成功': return '✅';
+                case '部分': return '⚠️';
+                case '失敗': return '❌';
+                case '未知': return '❔';
+                default: return '❔';
+            }
+        }
+
+        // 從狀態類獲取顏色
+        function getColorFromStatus(statusClass) {
+            switch(statusClass) {
+                case 'success': return 'success';
+                case 'partial': return 'partial';
+                case 'failure': return 'failure';
+                case 'nodata': return 'nodata';
+                default: return 'nodata';
+            }
+        }
+
+        // 日期格式化
+        function formatDate(date) {
+            return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        // 顯示工具提示
+        function showTooltip(service) {
+            const tooltip = document.getElementById('tooltip');
+            const tooltipArrow = document.getElementById('tooltipArrow');
+            const tooltipDateTime = document.getElementById('tooltipDateTime');
+            const tooltipStatus = document.getElementById('tooltipStatus');
+            const tooltipDescription = document.getElementById('tooltipDescription');
+            
+            // 設置工具提示內容
+            const statusClass = getStatusClass(service.status);
+            const statusEmoji = getStatusEmoji(service.status);
+            const formattedTime = formatDate(service.lastChecked);
+            
+            tooltipStatus.className = 'tooltipStatus ' + statusClass;
+            tooltipStatus.textContent = service.status;
+            
+            tooltipDateTime.textContent = '上次檢查: ' + formattedTime;
+            tooltipDescription.textContent = service.description;
+            
+            // 位置工具提示（在點擊元素的上方）
+            const rect = service.currentTarget.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top;
+            
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y - 100}px`;
+            
+            // 顯示工具提示
+            tooltip.style.opacity = '1';
+            
+            // 显示箭头并设置方向
+            tooltipArrow.style.left = '50%';
+            tooltipArrow.style.marginLeft = '-2px';
+            tooltipArrow.style.borderBottomColor = getTooltipBgColor();
+            
+            // 设置内容
+            tooltip.style.backgroundColor = getTooltipBgColor();
+            tooltip.style.boxShadow = `0 6px 18px ${getTooltipShadowColor()}`;
+            
+            // 动画
+            tooltip.style.transition = 'opacity 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease';
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+                setTimeout(() => {
+                    tooltip.style.opacity = '1';
+                }, 300);
+            }, 3000);
+        }
+
+        // 获取工具提示背景颜色
+        function getTooltipBgColor() {
+            return document.body.classList.contains('dark-theme') ? 
+                   'rgba(45, 45, 45, 0.9)' : 'white';
+        }
+
+        // 获取工具提示阴影颜色
+        function getTooltipShadowColor() {
+            return document.body.classList.contains('dark-theme') ? 
+                   'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.12)';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            setupThemeSwitcher();
+            genAllReports();
+        });
+    </script>
+</head>
+<body>
+    <!-- 主題切換按鈕 -->
     <div class="theme-switcher">
-      <button class="theme-btn active" data-theme="light" title="浅色模式">☀️</button>
-      <button class="theme-btn" data-theme="dark" title="深色模式">🌙</button>
+        <button class="theme-btn" data-theme="light" title="淺色模式">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+        </button>
+        <button class="theme-btn active" data-theme="dark" title="深色模式">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+        </button>
     </div>
 
     <div class="pageContainer">
-      <div class="headline">
-        <img src="logo.png" alt="Logo" width="200px" />
-        <span> System Status </span>
-      </div>
-      <div id="reports" class="reportContainer"></div>
-      <div id="tooltip" class="tooltip" style="opacity: 0">
-        <div id="tooltipArrow" class="tooltipArrow"></div>
-        <div id="tooltipDateTime" class="tooltipDateTime"></div>
-        <div id="tooltipStatus" class="tooltipStatus"></div>
-        <hr />
-        <div id="tooltipDescription" class="tooltipDescription"></div>
-      </div>
-      <div id="templates" style="display: none">
-        <div
-          id="statusSquareTemplate"
-          class="statusSquare $color"
-          data-status="$color"
-        ></div>
-        <div id="statusLineTemplate" class="statusLine"></div>
-        <div
-          id="statusStreamContainerTemplate"
-          class="statusStreamContainer"
-        ></div>
-        <div id="statusContainerTemplate" class="statusContainer">
-          <div class="statusHeader">
-            <h6 class="statusTitle">$title&nbsp;</h6>
-            <div class="$color statusHeadline">$status</div>
-          </div>
-          <div class="statusSubtitle">
-            <div class="sectionUrl"><a href="$url">$url</a></div>
-            <div class="statusUptime">$upTime in the last 30 days</div>
-          </div>
+        <div class="headline">
+            <img src="https://iTaoPu.Github.io/Status/logo.png" alt="Logo" width="200px" />
+            <span> System Status </span>
         </div>
-      </div>
+        <div id="reports" class="reportContainer"></div>
+        <div id="tooltip" class="tooltip" style="opacity: 0">
+            <div id="tooltipArrow" class="tooltipArrow"></div>
+            <div id="tooltipDateTime" class="tooltipDateTime"></div>
+            <div id="tooltipStatus" class="tooltipStatus"></div>
+            <hr />
+            <div id="tooltipDescription" class="tooltipDescription"></div>
+        </div>
     </div>
+
     <footer>
-      Forked from
-      <a href="https://vlink.cc/5iClub"
-        >© 2022-2025 5️⃣i計畫通行·樂玩公社</a
-      >.
+        標籤由 <a href="#" class="footer-link">iTaoPu</a> 提供。<br>
+        © 2023-2025 5️⃣i計畫通行·樂玩公社
     </footer>
-    <script>
-      // 主题切换功能
-      function setupThemeSwitcher() {
-        const themeBtns = document.querySelectorAll('.theme-btn');
-        
-        // 检查本地存储和系统偏好
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // 确定初始主题
-        const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-        document.body.classList.add(initialTheme === 'dark' ? 'dark-theme' : 'light-theme');
-        
-        // 设置活动按钮状态
-        themeBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.theme === initialTheme);
-        });
-        
-        // 添加按钮点击事件
-        themeBtns.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const selectedTheme = btn.dataset.theme;
-            
-            // 更新body类
-            document.body.classList.remove('light-theme', 'dark-theme');
-            document.body.classList.add(selectedTheme === 'dark' ? 'dark-theme' : 'light-theme');
-            
-            // 更新按钮状态
-            themeBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // 保存到本地存储
-            localStorage.setItem('theme', selectedTheme);
-          });
-        });
-      }
-      
-      // 初始化
-      document.addEventListener('DOMContentLoaded', () => {
-        setupThemeSwitcher();
-        genAllReports();
-      });
-    </script>
-  </body>
+</body>
 </html>
