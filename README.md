@@ -49,5 +49,4 @@ Send in a PR - we'd love to integrate your ideas.
 
 ## In case...
 
-You are looking for a developer friendly Feature flags, and A/B experimentation service for your product, check out: https://www.statsig.com
 
